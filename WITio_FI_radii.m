@@ -16,12 +16,12 @@ WITio.tbx.edit(); % Open this code in Editor
 close all; % Close figures
 
 % Define WIP file to open
-pathstr = 'FILEPATH/Raman/folder'; % Get folder of this script
-file = fullfile(pathstr, 'YOUR_RAMAN_FILE.wip'); % Construct full path
+pathstr = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii'; 
+file = fullfile(pathstr, 'OutputRaman.wip'); 
 
 % Open density results file
-pathstr2 = 'FILEPATH/Raman/DIADFIToutput/folder/'; % Get folder of this script
-file_densities = fullfile(pathstr2, 'YOUR_DIADFIT_DATA_fitted_2025-11-25'); 
+pathstr2 = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii'; 
+file_densities = fullfile(pathstr2, 'Output_Diadfit_fitted_2025-11-19.xlsx'); 
 T = readtable(file_densities);
 origNames = T.Properties.VariableDescriptions;
 %T = readtable(file_densities, 'VariableNamingRule', 'preserve');
@@ -122,7 +122,6 @@ end
 startChoice = menu('Start loop from:', ...
                    'Beginning (row 1)', ...
                    'First row with missing r_um');
-
 if startChoice == 1
     startIdx = 1;
 else 
@@ -376,28 +375,104 @@ for i = startIdx:height(T)
             mid_y = mean(h.YData);
             %text(mid_x, mid_y, sprintf('%.2f', r), 'FontSize', 16, 'Color', 'white', 'HorizontalAlignment', 'center');
         end
+    % elseif choice == 4
+    %     % ----------------------------- Option D ----------------------------- %
+    %     num_points = 4;
+    %     d_values = zeros(1, num_points);
+    % 
+    %     for j = 1:num_points
+    %         p0 = ginput(1);
+    %         pi = ginput(1);
+    %         lineSec = [p0; pi];
+    %         h = line(lineSec(:,1), lineSec(:,2), 'linewidth', 2, 'DisplayName', ['Segment ' num2str(j)]);
+    % 
+    %         delta_x = (h.XData(end) - h.XData(1)) * Xscale;
+    %         delta_y = (h.YData(end) - h.YData(1)) * Yscale;
+    %         d = sqrt(delta_x^2 + delta_y^2);
+    %         d_values(j) = d;
+    % 
+    %         mid_x = mean(h.XData);
+    %         mid_y = mean(h.YData);
+    %         %text(mid_x, mid_y, sprintf('%.2f', d), 'FontSize', 16, 'Color', 'white', 'HorizontalAlignment', 'left');
+    %     end
+    % 
+    %     r_values = d_values ./ 2
+
     elseif choice == 4
-        % ----------------------------- Option D ----------------------------- %
-        num_points = 4;
-        d_values = zeros(1, num_points);
+        % ----------------------------- Option D: Arbitrary edge-to-edge ----------------------------- %
     
-        for j = 1:num_points
-            p0 = ginput(1);
-            pi = ginput(1);
-            lineSec = [p0; pi];
-            h = line(lineSec(:,1), lineSec(:,2), 'linewidth', 2, 'DisplayName', ['Segment ' num2str(j)]);
+        % ------------------------------------------------------------------
+        % Ask user which resolution image to use (20x, 50x, 100x)
+        % ------------------------------------------------------------------
+        resMenuLabels = {};
+        resMenuMap = [];
     
-            delta_x = (h.XData(end) - h.XData(1)) * Xscale;
-            delta_y = (h.YData(end) - h.YData(1)) * Yscale;
-            d = sqrt(delta_x^2 + delta_y^2);
-            d_values(j) = d;
-    
-            mid_x = mean(h.XData);
-            mid_y = mean(h.YData);
-            %text(mid_x, mid_y, sprintf('%.2f', d), 'FontSize', 16, 'Color', 'white', 'HorizontalAlignment', 'left');
+        if ~isnan(T.x20x_num(i))
+            resMenuLabels{end+1} = 'Use 20x image';
+            resMenuMap(end+1) = T.x20x_num(i);
+        end
+        if ~isnan(T.x50x_num(i))
+            resMenuLabels{end+1} = 'Use 50x image';
+            resMenuMap(end+1) = T.x50x_num(i);
+        end
+        if ~isnan(T.x100x_num(i))
+            resMenuLabels{end+1} = 'Use 100x image';
+            resMenuMap(end+1) = T.x100x_num(i);
         end
     
-        r_values = d_values ./ 2;
+        % If none exist (should not happen), fallback
+        if isempty(resMenuLabels)
+            warning('No resolution images available! Using currently loaded image.');
+            chosenImage = image_num;
+        else
+            resIdx = menu('Choose image resolution for Option D:', resMenuLabels);
+            chosenImage = resMenuMap(resIdx);
+        end
+
+    % ------------------------------------------------------------------
+    % Load selected resolution image
+    % ------------------------------------------------------------------
+    close(figure(2));
+    image_num = chosenImage;
+    meta_num  = image_num + 1;
+
+    O_Bitmap = O_wid(image_num);
+    figure(2); h1 = O_Bitmap.plot('-scalebar');
+
+    % Scaling from metadata
+    O_Text = O_wid(meta_num);
+    um_width  = str2double(O_Text.Data{13,2});
+    um_height = str2double(O_Text.Data{14,2});
+    px_width  = size(O_Bitmap.Data,1);
+    px_height = size(O_Bitmap.Data,2);
+    Xscale = um_width/px_width;
+    Yscale = um_height/px_height;
+
+    figure(2);
+    drawnow;
+    set(gcf,'Units','normalized','OuterPosition',[0 0 1 1]);
+
+    % ------------------------------------------------------------------
+    % Perform edge-to-edge radius estimation
+    % ------------------------------------------------------------------
+    num_points = 4;
+    d_values = zeros(1, num_points);
+
+    for j = 1:num_points
+        p0 = ginput(1);
+        pi = ginput(1);
+        lineSec = [p0; pi];
+        h = line(lineSec(:,1), lineSec(:,2), 'linewidth', 2, ...
+                 'DisplayName',['Segment ' num2str(j)]);
+
+        delta_x = (h.XData(end) - h.XData(1)) * Xscale;
+        delta_y = (h.YData(end) - h.YData(1)) * Yscale;
+        d = sqrt(delta_x^2 + delta_y^2);
+        d_values(j) = d;
+    end
+
+    r_values = d_values ./ 2;
+
 
     elseif choice == 5
         % ----------------------------- stop ----------------------------- %
