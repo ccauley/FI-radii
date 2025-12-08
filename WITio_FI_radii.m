@@ -16,12 +16,12 @@ WITio.tbx.edit(); % Open this code in Editor
 close all; % Close figures
 
 % Define WIP file to open
-pathstr = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii'; 
-file = fullfile(pathstr, 'OutputRaman.wip'); 
+pathstr = 'FILEPATH/Raman/folder'; % Get folder of this script
+file = fullfile(pathstr, 'YOUR_RAMAN_FILE.wip'); % Construct full path
 
 % Open density results file
-pathstr2 = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii'; 
-file_densities = fullfile(pathstr2, 'Output_Diadfit_fitted_2025-11-19.xlsx'); 
+pathstr2 = 'FILEPATH/Raman/DIADFIToutput/folder/'; % Get folder of this script
+file_densities = fullfile(pathstr2, 'YOUR_DIADFIT_DATA_fitted_2025-11-25'); 
 T = readtable(file_densities);
 origNames = T.Properties.VariableDescriptions;
 %T = readtable(file_densities, 'VariableNamingRule', 'preserve');
