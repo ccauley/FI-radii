@@ -17,11 +17,11 @@ close all; % Close figures
 
 % Define WIP file to open
 pathstr = 'FILEPATH/Raman/folder'; % Get folder of this script
-file = fullfile(pathstr, 'YOUR_RAMAN_FILE.wip'); % Construct full path of the demo file 
+file = fullfile(pathstr, 'YOUR_RAMAN_FILE.wip'); % Construct full path
 
 % Open density results file
 pathstr2 = 'FILEPATH/Raman/DIADFIToutput/folder/'; % Get folder of this script
-file_densities = fullfile(pathstr2, 'YOUR_DIADFIT_DATA_fitted_2025-11-25'); % Construct full path of the demo file 
+file_densities = fullfile(pathstr2, 'YOUR_DIADFIT_DATA_fitted_2025-11-25'); 
 T = readtable(file_densities);
 origNames = T.Properties.VariableDescriptions;
 %T = readtable(file_densities, 'VariableNamingRule', 'preserve');
