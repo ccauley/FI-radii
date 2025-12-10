@@ -16,19 +16,18 @@ WITio.tbx.edit(); % Open this code in Editor
 close all; % Close figures
 
 % Define WIP file to open
-pathstr = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii'; 
-file = fullfile(pathstr, 'OutputRaman.wip'); 
+pathstr = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii/example'; 
+file = fullfile(pathstr, 'Input_from_Raman.wip'); 
 
 % Open density results file
-pathstr2 = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii'; 
-file_densities = fullfile(pathstr2, 'Output_Diadfit_fitted_2025-11-19.xlsx'); 
+pathstr2 = '/Users/christinacauley/Library/CloudStorage/OneDrive-UniversityOfOregon/Lab_Work/Olivine Deformation/Raman/WITio_FI_radii/example'; 
+file_densities = fullfile(pathstr2, 'Input_from_Diadfit_fitted_2025-11-19.xlsx'); 
 T = readtable(file_densities);
 origNames = T.Properties.VariableDescriptions;
 %T = readtable(file_densities, 'VariableNamingRule', 'preserve');
 
-[~, name1] = fileparts(file);
-[~, name2] = fileparts(file_densities);
-newfile_name = name1 + "_" + name2 + ".xlsx";
+
+newfile_name = 'Output_FI_radii_Diadfit_fitted_2025-11-19.xlsx'
 savePath = fullfile(pathstr2, newfile_name);
 %% Use to check for non-ASCII friendly characters you'll
 % Get original variable names
@@ -50,7 +49,7 @@ T.Properties.VariableNames = varNames;
 
 %% -------------------------------------------------------------------------%
 [O_wid, O_wip, O_wit] = WITio.read(file, '-all');
-% O_wid.manager  % Open Project Manager - use this command to view interactive Project Manager viewer similar to WITio proprietary 
+% O_wid.manager;  % Open Project Manager - use this command to view interactive Project Manager viewer similar to WITio proprietary 
 
 %% ------------------------------ GET WIN INDEXs -------------------------------------------%
 num_obj=length(O_wid);
@@ -478,6 +477,7 @@ for i = startIdx:height(T)
         % ----------------------------- stop ----------------------------- %
         %warning('Exiting loop and terminating script.');
         close all;
+        T.Properties.VariableNames{'r_um'} = 'r (µm)';
         for k = 1:numel(origNames)
             if ~isempty(origNames{k})
                 T.Properties.VariableNames{k} = origNames{k};
