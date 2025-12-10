@@ -478,6 +478,7 @@ for i = startIdx:height(T)
         % ----------------------------- stop ----------------------------- %
         %warning('Exiting loop and terminating script.');
         close all;
+        T.Properties.VariableNames{'r_um'} = 'r (µm)';
         for k = 1:numel(origNames)
             if ~isempty(origNames{k})
                 T.Properties.VariableNames{k} = origNames{k};
