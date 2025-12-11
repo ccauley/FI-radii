@@ -30,7 +30,8 @@ origNames = T.Properties.VariableDescriptions;
 [~, name2] = fileparts(file_densities);
 newfile_name = name1 + "_" + name2 + ".xlsx";
 savePath = fullfile(pathstr2, newfile_name);
-%% Use to check for non-ASCII friendly characters you'll
+
+%% Use to check for non-ASCII friendly characters
 % Get original variable names
 varNames = T.Properties.VariableNames;
 
@@ -56,7 +57,7 @@ T.Properties.VariableNames = varNames;
 num_obj=length(O_wid);
 wid_IndTag = strings(1,num_obj);
 
-% loop though each object in o_Wid to save filenames
+% loop through each object in o_Wid to save filenames
 for i=1:num_obj
     wid_IndTag(i)=string(O_wid(i).Name);
 end
