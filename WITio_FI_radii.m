@@ -6,7 +6,7 @@
 % doi:10.1016/j.softx.2022.101009.
 % 
 % code by Christina Cauley June 06 2025
-% code updated by Christina Cauley Dec 01 2025
+% code updated by Christina Cauley Dec 10 2025
 %-------------------------------------------------------------------------%
 % Temporarily set user preferences
 resetOnCleanup = WITio.tbx.pref.set({'wip_AutoCreateObj', 'wip_AutoCopyObj', 'wip_AutoModifyObj'}, {true, true, true}); % The original values prior to this call are restored when resetOnCleanup-variable is cleared.
